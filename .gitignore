@@ -2,4 +2,14 @@ target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.next
-release.properties
+*.properties
+*.iml
+persistence/target/
+persistence/*.iml
+api/target/
+api/*.iml
+api-impl/target/
+api-impl/*.iml
+web/target/
+web/*.iml
+.idea/

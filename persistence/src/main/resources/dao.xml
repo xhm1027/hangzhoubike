@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName">
+            <value>com.mysql.jdbc.Driver</value>
+        </property>
+        <property name="url">
+            <value>jdbc:mysql://localhost:3306/app_db</value>
+        </property>
+        <property name="username">
+            <value>username</value>
+        </property>
+        <property name="password">
+            <value>password</value>
+        </property>
+        <property name="maxActive">
+            <value>255</value>
+        </property>
+        <property name="maxIdle">
+            <value>2</value>
+        </property>
+        <property name="maxWait">
+            <value>120000</value>
+        </property>
+    </bean>
+
+    <!-- persistence provider for ibatis -->
+    <bean id="persistenceProvider" class="com.alibaba.pt.commons.persistence.impl.IbatisPersistenceProvider"
+          p:sqlMapClient-ref="sqlMapClient">
+        <!-- 分页参数的方言，如果没有指定，系统缺省是采用Oracle方式 -->
+        <property name="pageDialet">
+            <bean class="com.alibaba.pt.commons.persistence.page.MysqlPageDialet"/>
+        </property>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 抽象dao的定义 -->
+    <bean abstract="true" id="baseDao" class="com.alibaba.pt.commons.persistence.dao.impl.GenericDaoFactoryBean">
+        <property name="persistenceProviderRegistry">
+            <!-- 持久层的实现引用 -->
+            <bean class="com.alibaba.pt.commons.persistence.PersistenceProviderRegistry">
+                <property name="persistenceProviders">
+                    <list>
+                        <ref bean="persistenceProvider"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="daoGenerator">
+            <bean class="com.alibaba.pt.commons.persistence.dao.impl.JavassistGenericDaoGenerator"/>
+        </property>
+    </bean>
+
+    <!-- 正常主体数据 -->
+    <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:ibatis/sqlmap-config.xml"/>
+    </bean>
+
+    <bean id="demoDao" p:target="com.xhm.hangzhoubike.dao.DemoDao" parent="baseDao"/>
+
+</beans>
