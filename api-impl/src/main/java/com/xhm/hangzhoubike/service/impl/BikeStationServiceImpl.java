@@ -137,7 +137,7 @@ public class BikeStationServiceImpl implements BikeStationService {
 
             bikeStationList.add(bikeStation);
         }
-//        saveDB(bikeStationList);
+        saveDB(bikeStationList);
         return bikeStationList;
     }
     
