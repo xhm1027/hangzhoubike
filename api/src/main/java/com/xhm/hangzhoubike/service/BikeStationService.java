@@ -29,7 +29,8 @@ public interface BikeStationService {
     /**
      * 根据名称查找站点
      * @param name
+     * @param area
      * @return
      */
-    public List<BikeStationDO> queryBikeStationByName(String name);
+    public List<BikeStationDO> queryBikeStationByName(String name,String area);
 }

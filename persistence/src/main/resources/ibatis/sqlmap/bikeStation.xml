@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.xhm.hangzhoubike.model.dataobject.BikeStationDO">
+    <typeAlias alias="bikeStationDO" type="com.xhm.hangzhoubike.model.dataobject.BikeStationDO"/>
+    <resultMap id="bikeStationDO.rm" class="bikeStationDO">
+        <result column="id" property="id"/>
+        <result column="station_id" property="stationId"/>
+        <result column="watch_status" property="watchStatus"/>
+        <result column="other_service" property="otherService"/>
+        <result column="station_name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="service_period" property="servicePeriod"/>
+        <result column="service_phone" property="servicePhone"/>
+        <result column="can_be_rent" property="canBeRent"/>
+        <result column="can_be_return" property="canBeReturn"/>
+        <result column="x" property="x"/>
+        <result column="y" property="y"/>
+        <result column="station_status" property="status"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <!-- selector -->
+    <sql id="bikeStationDO.selector">
+		SELECT
+		id,station_id,watch_status,other_service,station_name,address,service_period,service_phone,can_be_rent,can_be_return,x,y,station_status,gmt_create, gmt_modified
+		FROM bike_station
+    </sql>
+    <!-- END selector -->
+
+    <!-- counter -->
+    <sql id="bikeStationDO.counter">
+		SELECT COUNT(*) FROM bike_station
+    </sql>
+    <!-- END counter -->
+
+    <!-- 条件片段 -->
+    <sql id="bikeStationDO.get_segment">
+        <dynamic prepend="WHERE">
+            <isNotNull prepend="AND" property="id">
+                id = #id#
+            </isNotNull>
+            <isNotNull prepend="AND" property="stationId">
+                station_id = #stationId#
+            </isNotNull>
+            <isNotNull prepend="AND" property="watchStatus">
+                watch_status = #watchStatus#
+            </isNotNull>
+            <isNotNull prepend="AND" property="otherService">
+                other_service = #otherService#
+            </isNotNull>
+            <isNotNull prepend="AND" property="name">
+                station_name = #name#
+            </isNotNull>
+            <isNotNull prepend="AND" property="address">
+                address = #address#
+            </isNotNull>
+            <isNotNull prepend="AND" property="servicePeriod">
+                service_period = #servicePeriod#
+            </isNotNull>
+            <isNotNull prepend="AND" property="servicePhone">
+                service_phone = #servicePhone#
+            </isNotNull>
+            <isNotNull prepend="AND" property="canBeRent">
+                can_be_rent = #canBeRent#
+            </isNotNull>
+            <isNotNull prepend="AND" property="canBeReturn">
+                can_be_return = #canBeReturn#
+            </isNotNull>
+            <isNotNull prepend="AND" property="x">
+                x = #x#
+            </isNotNull>
+            <isNotNull prepend="AND" property="y">
+                y = #y#
+            </isNotNull>
+            <isNotNull prepend="AND" property="status">
+                station_status = #status#
+            </isNotNull>
+            <!-- gmtCreate 和 gmtModified作为查询条件的时间段用，gmtCreate表示开始时间，gmtModified表示结束时间 -->
+            <isNotNull property="gmtCreate" prepend="AND">
+                gmt_create>=#gmtCreate#
+            </isNotNull>
+            <isNotNull property="gmtModified" prepend="AND">
+                <![CDATA[gmt_create<=#gmtModified#]]>
+            </isNotNull>
+        </dynamic>
+    </sql>
+
+    <!-- INSERT -->
+    <insert id="create" parameterClass="bikeStationDO">
+        INSERT INTO bike_station(station_id,watch_status,other_service,station_name,address,
+        service_period,service_phone,can_be_rent,can_be_return,x,y,station_status,gmt_create,gmt_modified)
+        VALUES(#stationId#,#watchStatus#,#otherService#,#name#,#address#,#servicePeriod#,#servicePhone#,
+        #canBeRent#,#canBeReturn#,#x#,#y#,#status#,now(), now())
+        <selectKey resultClass="long" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+    <!-- ENE INSERT -->
+
+
+    <!--更新 -->
+    <update id="update" parameterClass="bikeStationDO">
+        UPDATE bike_station
+        set gmt_modified = now()
+        <dynamic>
+            <isNotNull prepend="," property="watchStatus">
+                watch_status = #watchStatus#
+            </isNotNull>
+            <isNotNull prepend="," property="otherService">
+                other_service = #otherService#
+            </isNotNull>
+            <isNotNull prepend="," property="name">
+                station_name = #name#
+            </isNotNull>
+            <isNotNull prepend="," property="address">
+                address = #address#
+            </isNotNull>
+            <isNotNull prepend="," property="servicePeriod">
+                service_period = #servicePeriod#
+            </isNotNull>
+            <isNotNull prepend="," property="servicePhone">
+                service_phone = #servicePhone#
+            </isNotNull>
+            <isNotNull prepend="," property="canBeRent">
+                can_be_rent = #canBeRent#
+            </isNotNull>
+            <isNotNull prepend="," property="canBeReturn">
+                can_be_return = #canBeReturn#
+            </isNotNull>
+            <isNotNull prepend="," property="x">
+                x = #x#
+            </isNotNull>
+            <isNotNull prepend="," property="y">
+                y = #y#
+            </isNotNull>
+            <isNotNull prepend="," property="status">
+                station_status = #status#
+            </isNotNull>
+        </dynamic>
+        where station_id = #stationId#
+    </update>
+   
+
+    <!-- GET -->
+    <select id="load" resultMap="bikeStationDO.rm">
+        <include refid="bikeStationDO.selector"/>
+        WHERE station_id = #stationId#
+    </select>
+
+    <select id="find" parameterClass="bikeStationDO" resultMap="bikeStationDO.rm">
+        <include refid="bikeStationDO.selector"/>
+        <include refid="bikeStationDO.get_segment"/>
+    </select>
+    <!-- END GET -->
+
+    <!-- 删除 -->
+    <delete id="delete" parameterClass="long">
+    	DELETE FROM bike_station where station_id = #stationId#
+    </delete>
+    <!-- END 删除 -->
+</sqlMap>
+

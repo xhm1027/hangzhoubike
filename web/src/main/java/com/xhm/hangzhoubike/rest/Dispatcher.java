@@ -46,6 +46,7 @@ public class Dispatcher {
     public @ResponseBody
     String queryBikeStationByName(HttpServletRequest request, HttpServletResponse response) {
         String name = request.getParameter("name");
-        return JSON.toJSONString(bikeStationService.queryBikeStationByName(name));
+        String area = request.getParameter("area");
+        return JSON.toJSONString(bikeStationService.queryBikeStationByName(name,area));
     }
 }

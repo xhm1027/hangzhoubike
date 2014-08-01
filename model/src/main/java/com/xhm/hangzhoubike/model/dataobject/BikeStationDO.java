@@ -1,6 +1,7 @@
 package com.xhm.hangzhoubike.model.dataobject;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <P></P>
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public class BikeStationDO implements Serializable {
     private Long id;
+    private Long stationId;
     private String watchStatus;//值守状态
     private String otherService;//其他服务
     private String name;//名称
@@ -22,12 +24,30 @@ public class BikeStationDO implements Serializable {
     private String y;
     private Integer status;//不知道什么含义，估计是表示是否正常运营,“2”表示正常运营
 
+    /**
+     * 创建时间
+     */
+    private Date gmtCreate;
+
+    /**
+     * 修改时间
+     */
+    private Date gmtModified;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getStationId() {
+        return stationId;
+    }
+
+    public void setStationId(Long stationId) {
+        this.stationId = stationId;
     }
 
     public String getWatchStatus() {
@@ -116,5 +136,21 @@ public class BikeStationDO implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 }

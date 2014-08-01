@@ -1,6 +1,7 @@
 package com.xhm.hangzhoubike.dao;
 
 import com.alibaba.pt.commons.persistence.dao.GenericDao;
+import com.xhm.hangzhoubike.model.dataobject.BikeStationDO;
 
 /**
  * <P>应用监控信息操作DAO</P>
@@ -8,5 +9,5 @@ import com.alibaba.pt.commons.persistence.dao.GenericDao;
  * Date: 14-3-18
  * Time: 下午6:34
  */
-public interface DemoDao extends GenericDao<Long, DemoDO> {
+public interface BikeStationDao extends GenericDao<Long, BikeStationDO> {
 }

@@ -163,9 +163,9 @@
             </dependency>
             <!-- jdbc驱动 -->
             <dependency>
-                <groupId>jdbc.mysql</groupId>
-                <artifactId>mysql-connector</artifactId>
-                <version>5.1.5</version>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.18</version>
             </dependency>
            
             <dependency>

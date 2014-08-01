@@ -20,9 +20,15 @@
             </list>
         </property>
     </bean>
+
+    <bean
+            class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="location" value="classpath:scm.properties" />
+    </bean>
     
     <context:annotation-config />
-	<!--<import resource="classpath*:dao.xml" />-->
+	<import resource="classpath*:dao.xml" />
     <import resource="classpath*:service-config.xml" />
 
 </beans>

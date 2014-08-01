@@ -1,6 +1,8 @@
 package com.xhm.hangzhoubike.service.impl;
 
 import com.alibaba.common.lang.StringUtil;
+import com.alibaba.fastjson.JSON;
+import com.xhm.hangzhoubike.dao.BikeStationDao;
 import com.xhm.hangzhoubike.model.dataobject.BikeStationDO;
 import com.xhm.hangzhoubike.service.BikeStationService;
 import org.jsoup.Jsoup;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,6 +32,11 @@ public class BikeStationServiceImpl implements BikeStationService {
     private static Logger logger = LoggerFactory.getLogger(BikeStationServiceImpl.class);
     private final static String REQUEST_URL_LOCATION = "http://www.hzbus.cn/Page/NearbyBicyle.aspx";
     private final static String REQUEST_URL_QUERYNAME = "http://www.hzbus.cn/Page/BicyleSquare.aspx";
+
+    @Resource
+    BikeStationDao bikeStationDao;
+    
+    
     @Override
     public String hello() {
         return "this is demo service";
@@ -50,12 +58,39 @@ public class BikeStationServiceImpl implements BikeStationService {
     }
 
     @Override
-    public List<BikeStationDO> queryBikeStationByName(String name) {
+    public List<BikeStationDO> queryBikeStationByName(String name,String area) {
         if (StringUtil.isNotBlank(name)) {
+            if(StringUtil.isBlank(area)){
+                area = "-1";
+            }
+            int index = 1;
+            Long stationId = null;
+            List<BikeStationDO> list = new ArrayList<BikeStationDO>();
             try {
-                Document doc = Jsoup.connect(REQUEST_URL_QUERYNAME)
-                        .timeout(10000).data("nm", name).data("area", "-1").get();
-                return getBikeStationList(getResult(doc));
+                while(true){
+                    Document doc = Jsoup.connect(REQUEST_URL_QUERYNAME)
+                            .timeout(10000)
+                            .data("nm", name)
+                            .data("area", area)
+                            .data("rnd", "2")
+                            .data("__EVENTARGUMENT", ""+index)
+                            .data("__EVENTTARGET", "AspNetPager1")
+                            .get();
+                    index++;
+                    List<BikeStationDO> l = getBikeStationList(getResult(doc));
+//                    已经是最后一页的情况判断如下：
+//                    1、这一页为空；
+//                    2、这一页第一个站点的id和记录的id相同；
+                    if(l==null||l.size()==0){
+                        break;
+                    }
+                    if(stationId!=null&&stationId.longValue()==l.get(0).getStationId()){
+                        break;
+                    }
+                    list.addAll(l);
+                    stationId = l.get(0).getStationId();
+                }
+                return list;
             } catch (IOException e) {
                 logger.error("queryBikeStationByName fail", e);
             }
@@ -94,12 +129,30 @@ public class BikeStationServiceImpl implements BikeStationService {
                 bikeStation.setStatus(Integer.valueOf(status));
             }
             String id = array[2].split(" ")[0];
-            bikeStation.setId(Long.valueOf(id.replaceAll("№","")));
+            id = id.replaceAll("№", "");
+            if(StringUtil.isBlank(id)){
+                continue;
+            }
+            bikeStation.setStationId(Long.valueOf(id));
 
             bikeStationList.add(bikeStation);
         }
-
+//        saveDB(bikeStationList);
         return bikeStationList;
+    }
+    
+    private void saveDB(List<BikeStationDO> list){
+        if(list==null){
+            return;
+        }
+        for(BikeStationDO bikeStationDO : list){
+            BikeStationDO dbDO = bikeStationDao.load(bikeStationDO.getStationId());
+            if(dbDO==null){
+                bikeStationDao.create(bikeStationDO);
+            }else{
+                bikeStationDao.update(bikeStationDO);
+            }
+        }
     }
 
     private List<String[]> getResult(Document doc) {
@@ -153,5 +206,13 @@ public class BikeStationServiceImpl implements BikeStationService {
             }
         }
         return tmp.toString();
+    }
+
+
+    public static void main(String[] args) {
+        BikeStationServiceImpl service = new BikeStationServiceImpl();
+//        List<BikeStationDO> arrayList = service.queryBikeStationByLocation("500", "120.16400115634164","30.23913689644955");
+         List<BikeStationDO> arrayList = service.queryBikeStationByName("10","-1");
+        System.out.println(JSON.toJSONString(arrayList));
     }
 }

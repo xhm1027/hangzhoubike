@@ -35,8 +35,8 @@
         </dependency>
         <!-- jdbc驱动 -->
         <dependency>
-            <groupId>jdbc.mysql</groupId>
-            <artifactId>mysql-connector</artifactId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
         <dependency>
