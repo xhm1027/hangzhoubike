@@ -61,7 +61,7 @@ public class BikeStationServiceImpl implements BikeStationService {
     public List<BikeStationDO> queryBikeStationByName(String name,String area) {
         if (StringUtil.isNotBlank(name)) {
             if(StringUtil.isBlank(area)){
-                area = "-1";
+                area = "500";
             }
             int index = 1;
             Long stationId = null;
