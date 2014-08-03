@@ -67,5 +67,6 @@
     </bean>
 
     <bean id="bikeStationDao" p:target="com.xhm.hangzhoubike.dao.BikeStationDao" parent="baseDao"/>
+    <bean id="bikeStationHistoryDao" p:target="com.xhm.hangzhoubike.dao.BikeStationHistoryDao" parent="baseDao"/>
 
 </beans>

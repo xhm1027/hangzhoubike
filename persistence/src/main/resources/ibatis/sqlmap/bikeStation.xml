@@ -92,9 +92,11 @@
         service_period,service_phone,can_be_rent,can_be_return,x,y,station_status,gmt_create,gmt_modified)
         VALUES(#stationId#,#watchStatus#,#otherService#,#name#,#address#,#servicePeriod#,#servicePhone#,
         #canBeRent#,#canBeReturn#,#x#,#y#,#status#,now(), now())
-        <selectKey resultClass="long" keyProperty="id">
-            SELECT LAST_INSERT_ID() AS ID
-        </selectKey>
+        ON DUPLICATE KEY UPDATE gmt_modified = now(),can_be_rent = values(can_be_rent),
+        can_be_return = values(can_be_return),x = values(x),y = values(y),station_status = values(station_status)
+        <!--<selectKey resultClass="long" keyProperty="id">-->
+            <!--SELECT LAST_INSERT_ID() AS ID-->
+        <!--</selectKey>-->
     </insert>
     <!-- ENE INSERT -->
 

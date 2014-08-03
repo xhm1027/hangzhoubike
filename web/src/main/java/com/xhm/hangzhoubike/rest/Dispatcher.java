@@ -2,6 +2,7 @@ package com.xhm.hangzhoubike.rest;
 
 import com.alibaba.fastjson.JSON;
 import com.xhm.hangzhoubike.service.BikeStationService;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 @Component("dispatcher")
 public class Dispatcher {
 
+    Logger logger = Logger.getLogger("webLogger");
     @Resource
     BikeStationService bikeStationService;
 
@@ -38,6 +40,7 @@ public class Dispatcher {
         String range = request.getParameter("range");
         String x = request.getParameter("x");
         String y = request.getParameter("y");
+        logger.info("query by location:range="+range+",x="+x+"y="+y);
         return JSON.toJSONString(bikeStationService.queryBikeStationByLocation(range,x,y));
     }
 
@@ -46,7 +49,7 @@ public class Dispatcher {
     public @ResponseBody
     String queryBikeStationByName(HttpServletRequest request, HttpServletResponse response) {
         String name = request.getParameter("name");
-        String area = request.getParameter("area");
-        return JSON.toJSONString(bikeStationService.queryBikeStationByName(name,area));
+        logger.info("query by name:name="+name);
+        return JSON.toJSONString(bikeStationService.queryBikeStationByName(name));
     }
 }

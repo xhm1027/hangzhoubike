@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="PROJECT" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${hangzhoubike.loggingRoot}/startup.log"/>
+        <param name="encoding" value="utf-8"/>
+        <param name="append" value="false"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] - [%t] %X{method}  %5p %c{1}:%L - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="task" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${hangzhoubike.loggingRoot}/task.log"/>
+        <param name="encoding" value="utf-8"/>
+        <param name="append" value="true"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d{HH:mm:ss} %c - %X{method} [%X{requestURLWithQueryString}] %-5p - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="taskLogger" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="task"/>
+    </logger>
+
+    <appender name="service" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${hangzhoubike.loggingRoot}/service.log"/>
+        <param name="encoding" value="utf-8"/>
+        <param name="append" value="true"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d{HH:mm:ss} %c - %X{method} [%X{requestURLWithQueryString}] %-5p - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="serviceLogger" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="service"/>
+    </logger>
+
+
+    <appender name="web" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="${hangzhoubike.loggingRoot}/web.log"/>
+        <param name="encoding" value="utf-8"/>
+        <param name="append" value="true"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d{HH:mm:ss} %c - %X{method} [%X{requestURLWithQueryString}] %-5p - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="webLogger" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="web"/>
+    </logger>
+    
+    <root>
+        <level value="WARN"/>
+        <appender-ref ref="PROJECT"/>
+    </root>
+</log4j:configuration>

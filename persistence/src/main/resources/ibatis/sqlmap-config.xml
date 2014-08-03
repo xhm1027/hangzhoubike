@@ -6,5 +6,6 @@
     <settings cacheModelsEnabled="true" enhancementEnabled="true" lazyLoadingEnabled="false"
               useStatementNamespaces="true"/>
     <sqlMap resource="ibatis/sqlmap/bikeStation.xml"/>
+    <sqlMap resource="ibatis/sqlmap/bikeStationHistory.xml"/>
 
 </sqlMapConfig>

@@ -5,15 +5,13 @@ import com.alibaba.fastjson.JSON;
 import com.xhm.hangzhoubike.dao.BikeStationDao;
 import com.xhm.hangzhoubike.model.dataobject.BikeStationDO;
 import com.xhm.hangzhoubike.service.BikeStationService;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,13 +21,12 @@ import java.util.regex.Pattern;
 
 /**
  * <P></P>
- * User: <a href="mailto:xhm.xuhm@alibaba-inc.com">苍旻</a>
  * Date: 14-3-31
  * Time: 上午10:29
  */
 @Component("demoService")
 public class BikeStationServiceImpl implements BikeStationService {
-    private static Logger logger = LoggerFactory.getLogger(BikeStationServiceImpl.class);
+    Logger logger = Logger.getLogger("serviceLogger");
     private final static String REQUEST_URL_LOCATION = "http://www.hzbus.cn/Page/NearbyBicyle.aspx";
     private final static String REQUEST_URL_QUERYNAME = "http://www.hzbus.cn/Page/BicyleSquare.aspx";
 
@@ -47,31 +44,29 @@ public class BikeStationServiceImpl implements BikeStationService {
         try {
             if(StringUtil.isBlank(range)){
                 range= "500";
-            }
+            } logger.info("query by NearbyBicyle:range="+range+",x="+x+"y="+y);
             Document doc = Jsoup.connect(REQUEST_URL_LOCATION).timeout(10000)
                     .data("w", range).data("x", x).data("y", y).get();
             return getBikeStationList(getResult(doc));
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("queryBikeStationByLocation fail",e);
         }
         return new ArrayList<BikeStationDO>();
     }
 
     @Override
-    public List<BikeStationDO> queryBikeStationByName(String name,String area) {
+    public List<BikeStationDO> queryBikeStationByName(String name) {
         if (StringUtil.isNotBlank(name)) {
-            if(StringUtil.isBlank(area)){
-                area = "500";
-            }
             int index = 1;
             Long stationId = null;
             List<BikeStationDO> list = new ArrayList<BikeStationDO>();
             try {
                 while(true){
+                    logger.info("query by BicyleSquare:nm="+name+",__EVENTARGUMENT="+index);
                     Document doc = Jsoup.connect(REQUEST_URL_QUERYNAME)
                             .timeout(10000)
                             .data("nm", name)
-                            .data("area", area)
+                            .data("area", "-1")
                             .data("rnd", "2")
                             .data("__EVENTARGUMENT", ""+index)
                             .data("__EVENTTARGET", "AspNetPager1")
@@ -91,7 +86,7 @@ public class BikeStationServiceImpl implements BikeStationService {
                     stationId = l.get(0).getStationId();
                 }
                 return list;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error("queryBikeStationByName fail", e);
             }
         }
@@ -104,40 +99,45 @@ public class BikeStationServiceImpl implements BikeStationService {
             return bikeStationList;
         }
         for(String[] array: list){
-            if(array.length!=16){
-                continue;
-            }
-            BikeStationDO bikeStation = new BikeStationDO();
-            bikeStation.setWatchStatus(array[0]);
-            bikeStation.setOtherService(array[1]);
-            bikeStation.setName(array[2]);
-            bikeStation.setAddress(array[3]);
-            bikeStation.setServicePeriod(array[4]);
-            bikeStation.setServicePhone(array[5]);
-            String canBeRent = array[6].replaceAll(" ","");
-            if(StringUtil.isNumeric(canBeRent)){
-                bikeStation.setCanBeRent(Integer.valueOf(canBeRent));
-            }
-            String canBeReturn= array[7].replaceAll(" ","");
-            if(StringUtil.isNumeric(canBeReturn)){
-                bikeStation.setCanBeReturn(Integer.valueOf(canBeReturn));
-            }
-            bikeStation.setX(array[8]);
-            bikeStation.setY(array[9]);
-            String status= array[14].replaceAll(" ","");
-            if(StringUtil.isNumeric(status)){
-                bikeStation.setStatus(Integer.valueOf(status));
-            }
-            String id = array[2].split(" ")[0];
-            id = id.replaceAll("№", "");
-            if(StringUtil.isBlank(id)){
-                continue;
-            }
-            bikeStation.setStationId(Long.valueOf(id));
+            try{
+                if(array.length!=16){
+                    continue;
+                }
+                BikeStationDO bikeStation = new BikeStationDO();
+                bikeStation.setWatchStatus(array[0]);
+                bikeStation.setOtherService(array[1]);
+                bikeStation.setName(array[2]);
+                bikeStation.setAddress(array[3]);
+                bikeStation.setServicePeriod(array[4]);
+                bikeStation.setServicePhone(array[5]);
+                String canBeRent = array[6].replaceAll(" ","");
+                if(StringUtil.isNumeric(canBeRent)){
+                    bikeStation.setCanBeRent(Integer.valueOf(canBeRent));
+                }
+                String canBeReturn= array[7].replaceAll(" ","");
+                if(StringUtil.isNumeric(canBeReturn)){
+                    bikeStation.setCanBeReturn(Integer.valueOf(canBeReturn));
+                }
+                bikeStation.setX(array[8]);
+                bikeStation.setY(array[9]);
+                String status= array[14].replaceAll(" ","");
+                if(StringUtil.isNumeric(status)){
+                    bikeStation.setStatus(Integer.valueOf(status));
+                }
+                String id = array[2].split(" ")[0];
+                id = id.replaceAll("№", "");
+                if(StringUtil.isBlank(id)){
+                    continue;
+                }
+                bikeStation.setStationId(Long.valueOf(id));
 
-            bikeStationList.add(bikeStation);
+                bikeStationList.add(bikeStation);
+
+            }catch (Exception e){
+                logger.error("get do fail,String[]="+array,e);
+            }
         }
-        saveDB(bikeStationList);
+//        saveDB(bikeStationList);
         return bikeStationList;
     }
     
@@ -146,12 +146,12 @@ public class BikeStationServiceImpl implements BikeStationService {
             return;
         }
         for(BikeStationDO bikeStationDO : list){
-            BikeStationDO dbDO = bikeStationDao.load(bikeStationDO.getStationId());
-            if(dbDO==null){
+//            BikeStationDO dbDO = bikeStationDao.load(bikeStationDO.getStationId());
+//            if(dbDO==null){
                 bikeStationDao.create(bikeStationDO);
-            }else{
-                bikeStationDao.update(bikeStationDO);
-            }
+//            }else{
+//                bikeStationDao.update(bikeStationDO);
+//            }
         }
     }
 
@@ -212,7 +212,7 @@ public class BikeStationServiceImpl implements BikeStationService {
     public static void main(String[] args) {
         BikeStationServiceImpl service = new BikeStationServiceImpl();
 //        List<BikeStationDO> arrayList = service.queryBikeStationByLocation("500", "120.16400115634164","30.23913689644955");
-         List<BikeStationDO> arrayList = service.queryBikeStationByName("10","-1");
+         List<BikeStationDO> arrayList = service.queryBikeStationByName("武林小广场");
         System.out.println(JSON.toJSONString(arrayList));
     }
 }
