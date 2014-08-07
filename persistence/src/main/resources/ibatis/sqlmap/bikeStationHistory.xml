@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.xhm.hangzhoubike.model.dataobject.BikeStationHistoryDO">
+    <typeAlias alias="bikeStationHistoryDO" type="com.xhm.hangzhoubike.model.dataobject.BikeStationHistoryDO"/>
+    <resultMap id="bikeStationHistoryDO.rm" class="bikeStationHistoryDO">
+        <result column="id" property="id"/>
+        <result column="station_id" property="stationId"/>
+        <result column="can_be_rent" property="canBeRent"/>
+        <result column="can_be_return" property="canBeReturn"/>
+        <result column="log_time" property="logTime"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <!-- selector -->
+    <sql id="bikeStationHistoryDO.selector">
+		SELECT
+		id,station_id,can_be_rent,can_be_return,log_time,gmt_create, gmt_modified
+		FROM bike_station_history
+    </sql>
+    <!-- END selector -->
+
+    <!-- counter -->
+    <sql id="bikeStationHistoryDO.counter">
+		SELECT COUNT(*) FROM bike_station_history
+    </sql>
+    <!-- END counter -->
+
+    <!-- 条件片段 -->
+    <sql id="bikeStationHistoryDO.get_segment">
+        <dynamic prepend="WHERE">
+            <isNotNull prepend="AND" property="id">
+                id = #id#
+            </isNotNull>
+            <isNotNull prepend="AND" property="stationId">
+                station_id = #stationId#
+            </isNotNull>
+            <isNotNull prepend="AND" property="canBeRent">
+                can_be_rent = #canBeRent#
+            </isNotNull>
+            <isNotNull prepend="AND" property="canBeReturn">
+                can_be_return = #canBeReturn#
+            </isNotNull>
+            <!-- gmtCreate 和 gmtModified作为查询条件的时间段用，gmtCreate表示开始时间，gmtModified表示结束时间 -->
+            <isNotNull property="gmtCreate" prepend="AND">
+                log_time>=#gmtCreate#
+            </isNotNull>
+            <isNotNull property="gmtModified" prepend="AND">
+                <![CDATA[log_time<=#gmtModified#]]>
+            </isNotNull>
+        </dynamic>
+    </sql>
+
+    <!-- INSERT -->
+    <insert id="create" parameterClass="bikeStationHistoryDO">
+        INSERT INTO bike_station_history(station_id,can_be_rent,can_be_return,log_time,gmt_create,gmt_modified)
+        VALUES(#stationId#,#canBeRent#,#canBeReturn#,#logTime#,now(), now())
+        <selectKey resultClass="long" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+    <!-- ENE INSERT -->
+
+    <!-- GET -->
+    <select id="load" resultMap="bikeStationHistoryDO.rm">
+        <include refid="bikeStationHistoryDO.selector"/>
+        WHERE id = #id#
+    </select>
+
+    <select id="find" parameterClass="bikeStationHistoryDO" resultMap="bikeStationHistoryDO.rm">
+        <include refid="bikeStationHistoryDO.selector"/>
+        <include refid="bikeStationHistoryDO.get_segment"/>
+    </select>
+    <!-- END GET -->
+
+    <!-- 删除 -->
+    <!-- END 删除 -->
+
+    <!-- 分页筛选 -->
+    <select id="page_count" resultClass="Integer">
+        <include refid="bikeStationHistoryDO.counter"/>
+        <include refid="bikeStationHistoryDO.get_segment"/>
+    </select>
+
+    <select id="page" resultClass="Integer" resultMap="bikeStationHistoryDO.rm">
+        <include refid="bikeStationHistoryDO.selector"/>
+        <include refid="bikeStationHistoryDO.get_segment"/>
+        ORDER BY id DESC LIMIT #query_page_index#, #query_page_size#;
+    </select>
+    <!-- END 分页筛选 -->
+</sqlMap>
+

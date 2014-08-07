@@ -7,6 +7,27 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
+
+    <!--静态资源的访问配置,文件夹配置 -->
+    <mvc:annotation-driven />
+    <!--<mvc:resources mapping="/static/**" location="/static/" cache-period="31556926"/>-->
+    <mvc:default-servlet-handler/>
+    
 	<context:component-scan base-package="com.xhm.hangzhoubike.rest" />
 
+
+
+    <bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath" value="WEB-INF/velocity"/>
+        <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">utf-8</prop>
+                <prop key="output.encoding">utf-8</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="velocityViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="suffix" value=".vm"/>
+        <property name="contentType" value="text/html;charset=utf-8"/>
+    </bean>
 </beans>
