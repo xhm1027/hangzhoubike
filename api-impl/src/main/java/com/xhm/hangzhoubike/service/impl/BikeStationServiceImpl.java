@@ -2,6 +2,7 @@ package com.xhm.hangzhoubike.service.impl;
 
 import com.alibaba.common.lang.StringUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.pt.commons.persistence.page.Page;
 import com.xhm.hangzhoubike.dao.BikeStationDao;
 import com.xhm.hangzhoubike.model.dataobject.BikeStationDO;
 import com.xhm.hangzhoubike.service.BikeStationService;
@@ -12,6 +13,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,37 +62,58 @@ public class BikeStationServiceImpl implements BikeStationService {
             int index = 1;
             Long stationId = null;
             List<BikeStationDO> list = new ArrayList<BikeStationDO>();
-            try {
-                while(true){
-                    logger.info("query by BicyleSquare:nm="+name+",__EVENTARGUMENT="+index);
-                    Document doc = Jsoup.connect(REQUEST_URL_QUERYNAME)
-                            .timeout(10000)
-                            .data("nm", name)
-                            .data("area", "-1")
-                            .data("rnd", "2")
-                            .data("__EVENTARGUMENT", ""+index)
-                            .data("__EVENTTARGET", "AspNetPager1")
-                            .get();
-                    index++;
-                    List<BikeStationDO> l = getBikeStationList(getResult(doc));
+            while(true){
+                List<BikeStationDO> l = fetchBikeStationList(name,index);
+               
 //                    已经是最后一页的情况判断如下：
 //                    1、这一页为空；
 //                    2、这一页第一个站点的id和记录的id相同；
-                    if(l==null||l.size()==0){
-                        break;
-                    }
-                    if(stationId!=null&&stationId.longValue()==l.get(0).getStationId()){
-                        break;
-                    }
-                    list.addAll(l);
-                    stationId = l.get(0).getStationId();
+                if(l==null||l.size()==0){
+                    break;
                 }
-                return list;
-            } catch (Exception e) {
-                logger.error("queryBikeStationByName fail", e);
+                if(stationId!=null&&stationId.longValue()==l.get(0).getStationId()){
+                    break;
+                }
+                list.addAll(l);
+                stationId = l.get(0).getStationId();
+                index++;
             }
+            return list;
         }
         return new ArrayList<BikeStationDO>();
+    }
+    
+    private List<BikeStationDO> fetchBikeStationList(String name,int index){
+        logger.info("query by BicyleSquare:nm="+name+",__EVENTARGUMENT="+index);
+        try {
+            Document doc = Jsoup.connect(REQUEST_URL_QUERYNAME)
+                    .timeout(10000)
+                    .data("nm", name)
+                    .data("area", "-1")
+                    .data("rnd", "2")
+                    .data("__EVENTARGUMENT", ""+index)
+                    .data("__EVENTTARGET", "AspNetPager1")
+                    .get();
+
+            List<BikeStationDO> l = getBikeStationList(getResult(doc));
+            return l;
+        } catch (IOException e) {
+            logger.error("fetchBikeStationList fail", e);
+            return null;
+        }
+    }
+
+    @Override
+    public List<BikeStationDO> queryBikeStationPageByName(String name, int page) {
+        if(page<1){
+            page = 1;
+        }
+        return fetchBikeStationList(name,page);
+    }
+
+    @Override
+    public Page<BikeStationDO> queryBikeStationPageInDB(int page, int pageSize) {
+        return bikeStationDao.page("page",new BikeStationDO(),page*pageSize,pageSize);
     }
 
     private List<BikeStationDO> getBikeStationList(List<String[]> list){

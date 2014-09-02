@@ -161,5 +161,18 @@
     	DELETE FROM bike_station where station_id = #stationId#
     </delete>
     <!-- END 删除 -->
+
+    <!-- 分页筛选 -->
+    <select id="page_count" resultClass="Integer">
+        <include refid="bikeStationDO.counter"/>
+        <include refid="bikeStationDO.get_segment"/>
+    </select>
+
+    <select id="page" resultClass="Integer" resultMap="bikeStationDO.rm">
+        <include refid="bikeStationDO.selector"/>
+        <include refid="bikeStationDO.get_segment"/>
+        ORDER BY id DESC LIMIT #query_page_index#, #query_page_size#;
+    </select>
+    <!-- END 分页筛选 -->
 </sqlMap>
 

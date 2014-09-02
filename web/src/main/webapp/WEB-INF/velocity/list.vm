@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>杭州公共自行车</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/list.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        #foreach($station in $stationPage.datas)
+            #set($percent=$station.canBeRent*100/($station.canBeRent+$station.canBeReturn))
+            #set($color="green")
+            #if($percent < 30)
+                #set($color="red")
+            #elseif($percent <60)
+                #set($color="purple")
+            #end
+            <div class="col-sm-3">
+                <div class="tile-progress tile-$color">
+                    <div class="tile-header">
+                        <h3>$station.stationId</h3>
+                        <span>$station.name</span>
+                    </div>
+                    <div class="tile-progressbar">
+                        <span data-fill="${percent}%" style="width: ${percent}%;"></span>
+                    </div>
+                    <div class="tile-footer">
+                        <h4>
+                            <span class="pct-counter">$station.canBeRent</span>可租借|
+                            <span class="pct-counter">$station.canBeReturn</span>可归还
+                        </h4>
+                        <h6>$station.address</h6>
+                    </div>
+                </div>
+            </div>
+        #end
+    </div>
+</div>
+<script type="text/javascript">
+</script>
+</body>
+</html>

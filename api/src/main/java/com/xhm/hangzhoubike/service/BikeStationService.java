@@ -1,5 +1,6 @@
 package com.xhm.hangzhoubike.service;
 
+import com.alibaba.pt.commons.persistence.page.Page;
 import com.xhm.hangzhoubike.model.dataobject.BikeStationDO;
 
 import java.util.List;
@@ -32,4 +33,21 @@ public interface BikeStationService {
      * @return
      */
     public List<BikeStationDO> queryBikeStationByName(String name);
+
+    /**
+     * 根据名称查找站点page
+     * @param name
+     * @param page
+     * @return
+     */
+    public List<BikeStationDO> queryBikeStationPageByName(String name,int page);
+
+
+    /**
+     * 
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public Page<BikeStationDO> queryBikeStationPageInDB(int page,int pageSize);
 }
