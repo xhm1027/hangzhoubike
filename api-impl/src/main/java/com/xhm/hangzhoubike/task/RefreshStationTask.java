@@ -33,7 +33,7 @@ public class RefreshStationTask {
     @Resource
     BikeStationHistoryDao bikeStationHistoryDao;
 
-    @Scheduled(cron = "0 */30 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void refresh(){
         long start = System.currentTimeMillis();
         Date logTime = new Date(start);

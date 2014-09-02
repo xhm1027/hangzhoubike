@@ -15,7 +15,6 @@ public class BikeStationHistoryDO implements Serializable {
     private Integer canBeRent;//可租数量
     private Integer canBeReturn;//可还数量
     private Date logTime;
-
     /**
      * 创建时间
      */

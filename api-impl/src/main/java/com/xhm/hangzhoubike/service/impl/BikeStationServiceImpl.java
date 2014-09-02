@@ -4,7 +4,9 @@ import com.alibaba.common.lang.StringUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.pt.commons.persistence.page.Page;
 import com.xhm.hangzhoubike.dao.BikeStationDao;
+import com.xhm.hangzhoubike.dao.BikeStationHistoryDao;
 import com.xhm.hangzhoubike.model.dataobject.BikeStationDO;
+import com.xhm.hangzhoubike.model.dataobject.BikeStationHistoryDO;
 import com.xhm.hangzhoubike.service.BikeStationService;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -34,7 +36,9 @@ public class BikeStationServiceImpl implements BikeStationService {
 
     @Resource
     BikeStationDao bikeStationDao;
-    
+
+    @Resource
+    BikeStationHistoryDao bikeStationHistoryDao;
     
     @Override
     public String hello() {
@@ -114,6 +118,22 @@ public class BikeStationServiceImpl implements BikeStationService {
     @Override
     public Page<BikeStationDO> queryBikeStationPageInDB(int page, int pageSize) {
         return bikeStationDao.page("page",new BikeStationDO(),page*pageSize,pageSize);
+    }
+
+    @Override
+    public BikeStationDO queryBikeStationByStationId(Long stationId) {
+        BikeStationDO query = new BikeStationDO();
+        query.setStationId(stationId);
+        List<BikeStationDO> bikeStationList = bikeStationDao.find(query);
+        if(bikeStationList==null||bikeStationList.size()>1){
+            return null;
+        }
+        return bikeStationList.get(0);
+    }
+
+    @Override
+    public List<BikeStationHistoryDO> queryHistory(BikeStationHistoryDO query) {
+        return bikeStationHistoryDao.find(query);
     }
 
     private List<BikeStationDO> getBikeStationList(List<String[]> list){

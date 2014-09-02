@@ -24,8 +24,8 @@
             <div class="col-sm-3">
                 <div class="tile-progress tile-$color">
                     <div class="tile-header">
-                        <h3>$station.stationId</h3>
-                        <span>$station.name</span>
+                        <h3><a href="/history.html?stationId=$station.stationId" target="_blank">$station.stationId</a></h3>
+                        <div class="overflow">$station.name</div>
                     </div>
                     <div class="tile-progressbar">
                         <span data-fill="${percent}%" style="width: ${percent}%;"></span>
@@ -35,12 +35,18 @@
                             <span class="pct-counter">$station.canBeRent</span>可租借|
                             <span class="pct-counter">$station.canBeReturn</span>可归还
                         </h4>
-                        <h6>$station.address</h6>
+                        <div class="overflow">$station.address</div>
                     </div>
                 </div>
             </div>
         #end
     </div>
+    #set($next=$page + 1)
+    #set($pre=$page - 1)
+    <ul class="pager">
+        <li class="previous #if(${stationPage.hasPre}==false) disabled#end"><a href="/index.html?page=$pre">&larr; 上一页</a></li>
+        <li class="next #if(${stationPage.hasNext}==false) disabled#end"><a href="/index.html?page=$next">下一页 &rarr;</a></li>
+    </ul>
 </div>
 <script type="text/javascript">
 </script>

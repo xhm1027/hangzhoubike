@@ -70,6 +70,7 @@
     <select id="find" parameterClass="bikeStationHistoryDO" resultMap="bikeStationHistoryDO.rm">
         <include refid="bikeStationHistoryDO.selector"/>
         <include refid="bikeStationHistoryDO.get_segment"/>
+        ORDER BY id
     </select>
     <!-- END GET -->
 

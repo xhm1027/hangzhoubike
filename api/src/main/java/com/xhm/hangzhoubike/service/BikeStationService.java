@@ -2,6 +2,7 @@ package com.xhm.hangzhoubike.service;
 
 import com.alibaba.pt.commons.persistence.page.Page;
 import com.xhm.hangzhoubike.model.dataobject.BikeStationDO;
+import com.xhm.hangzhoubike.model.dataobject.BikeStationHistoryDO;
 
 import java.util.List;
 
@@ -50,4 +51,20 @@ public interface BikeStationService {
      * @return
      */
     public Page<BikeStationDO> queryBikeStationPageInDB(int page,int pageSize);
+
+
+    /**
+     * 
+     * @param stationId
+     * @return
+     */
+    public BikeStationDO queryBikeStationByStationId(Long stationId);
+
+
+    /**
+     * 
+     * @param query
+     * @return
+     */
+    public List<BikeStationHistoryDO> queryHistory(BikeStationHistoryDO query);
 }

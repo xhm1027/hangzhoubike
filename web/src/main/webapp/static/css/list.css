@@ -17,8 +17,8 @@
     border-radius: 3px;
 }
 .tile-progress .tile-header {
-    padding: 15px 20px;
-    padding-bottom: 40px;
+    padding: 5px 20px;
+    padding-bottom: 15px;
 }
 .tile-progress .tile-progressbar {
     height: 2px;
@@ -84,3 +84,21 @@
     background-color: #ec3b83;
     color: #fff;
 }
+
+.overflow
+{
+    white-space:nowrap;
+    width:16em;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.overflow:hover
+{
+    text-overflow:inherit;
+    overflow:visible;
+    color:black;
+}
+
+
+
