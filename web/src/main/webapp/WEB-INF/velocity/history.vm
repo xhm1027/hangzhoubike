@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8">
     <title>近一周趋势</title>
@@ -106,3 +107,4 @@
     );
 </script>
 </body>
+</html>

@@ -125,7 +125,7 @@ public class BikeStationServiceImpl implements BikeStationService {
         BikeStationDO query = new BikeStationDO();
         query.setStationId(stationId);
         List<BikeStationDO> bikeStationList = bikeStationDao.find(query);
-        if(bikeStationList==null||bikeStationList.size()>1){
+        if(bikeStationList==null||bikeStationList.size()==0||bikeStationList.size()>1){
             return null;
         }
         return bikeStationList.get(0);

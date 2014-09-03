@@ -17,8 +17,7 @@
     border-radius: 3px;
 }
 .tile-progress .tile-header {
-    padding: 5px 20px;
-    padding-bottom: 15px;
+    padding: 5px;
 }
 .tile-progress .tile-progressbar {
     height: 2px;
@@ -39,7 +38,7 @@
     transition: all 1.5s cubic-bezier(0.230,1.000,0.320,1.000);
 }
 .tile-progress .tile-footer {
-    padding: 20px;
+    padding: 10px;
     text-align: right;
     background: rgba(0,0,0,0.1);
     -webkit-border-radius: 0 0 3px 3px;
@@ -85,6 +84,9 @@
     color: #fff;
 }
 
+.navbar{
+    margin-bottom: 2px;
+}
 .overflow
 {
     white-space:nowrap;

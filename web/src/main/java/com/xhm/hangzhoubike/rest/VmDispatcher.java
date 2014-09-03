@@ -23,10 +23,13 @@ public class VmDispatcher {
     @Resource
     BikeStationService bikeStationService;
 
+    @RequestMapping("/")
+    public String shwoDefault(HttpServletRequest request, Model model){
+        return showIndex(request,model);
+    }
+    
     @RequestMapping("/index.html")
     public String showIndex(HttpServletRequest request, Model model){
-        model.addAttribute("param",System.currentTimeMillis());
-
         String stationId = request.getParameter("stationId");
         if(StringUtils.isBlank(stationId)){
             
@@ -39,6 +42,14 @@ public class VmDispatcher {
         Page<BikeStationDO> stationPage = bikeStationService.queryBikeStationPageInDB(index,12);
         model.addAttribute("stationPage",stationPage);
         model.addAttribute("page",index);
+        return "page";
+    }
+
+    @RequestMapping("/realTimeQuery.html")
+    public String realTimeQuery(HttpServletRequest request, Model model){
+        String name = request.getParameter("name");
+        List<BikeStationDO> stationList = bikeStationService.queryBikeStationByName(name);
+        model.addAttribute("stationList",stationList);
         return "list";
     }
 

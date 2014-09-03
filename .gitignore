@@ -12,4 +12,4 @@ api-impl/target/
 api-impl/*.iml
 web/target/
 web/*.iml
-.idea/
+.idea
