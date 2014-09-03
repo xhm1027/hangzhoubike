@@ -18,7 +18,7 @@
 
     <properties>
         <unitils.version>3.1</unitils.version>
-        <spring.version>3.0.5.RELEASE</spring.version>
+        <spring.version>3.1.2.RELEASE</spring.version>
         <slf4j.version>1.6.1</slf4j.version>
         <!-- other jars -->
 

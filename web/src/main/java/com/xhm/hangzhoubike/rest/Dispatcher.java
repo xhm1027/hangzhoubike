@@ -33,8 +33,9 @@ public class Dispatcher {
     }
 
 
-    @RequestMapping(value = "/queryBikeStationByLocation.json", 
-            method = RequestMethod.GET)
+    @RequestMapping(value = "/queryBikeStationByLocation.json",
+            method = {RequestMethod.GET},
+            produces= "application/json;charset=UTF-8")
     public @ResponseBody
     String queryBikeStationByLocation(HttpServletRequest request, HttpServletResponse response) {
         String range = request.getParameter("range");
@@ -44,8 +45,9 @@ public class Dispatcher {
         return JSON.toJSONString(bikeStationService.queryBikeStationByLocation(range,x,y));
     }
 
-    @RequestMapping(value = "/queryBikeStationByName.json", 
-            method = RequestMethod.GET)
+    @RequestMapping(value = "/queryBikeStationByName.json",
+            method = {RequestMethod.GET},
+            produces= "application/json;charset=UTF-8")
     public @ResponseBody
     String queryBikeStationByName(HttpServletRequest request, HttpServletResponse response) {
         String name = request.getParameter("name");
