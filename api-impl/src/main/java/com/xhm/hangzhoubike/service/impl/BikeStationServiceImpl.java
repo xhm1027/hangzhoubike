@@ -117,14 +117,25 @@ public class BikeStationServiceImpl implements BikeStationService {
 
     @Override
     public Page<BikeStationDO> queryBikeStationPageInDB(int page, int pageSize) {
-        return bikeStationDao.page("page",new BikeStationDO(),page*pageSize,pageSize);
+        Page<BikeStationDO> stationDOPage= null;
+        try{
+            stationDOPage= bikeStationDao.page("page",new BikeStationDO(),page*pageSize,pageSize);
+        }catch (Exception e){
+            stationDOPage= bikeStationDao.page("page",new BikeStationDO(),page*pageSize,pageSize);
+        }
+        return stationDOPage;
     }
 
     @Override
     public BikeStationDO queryBikeStationByStationId(Long stationId) {
         BikeStationDO query = new BikeStationDO();
         query.setStationId(stationId);
-        List<BikeStationDO> bikeStationList = bikeStationDao.find(query);
+        List<BikeStationDO> bikeStationList = null;
+        try{
+            bikeStationList = bikeStationDao.find(query);
+        }catch (Exception e){
+            bikeStationList = bikeStationDao.find(query);
+        }
         if(bikeStationList==null||bikeStationList.size()==0||bikeStationList.size()>1){
             return null;
         }
@@ -133,7 +144,13 @@ public class BikeStationServiceImpl implements BikeStationService {
 
     @Override
     public List<BikeStationHistoryDO> queryHistory(BikeStationHistoryDO query) {
-        return bikeStationHistoryDao.find(query);
+        List<BikeStationHistoryDO> historyDOList = null;
+        try{
+            historyDOList = bikeStationHistoryDao.find(query);
+        }catch (Exception e){
+            historyDOList = bikeStationHistoryDao.find(query);
+        }
+        return historyDOList;
     }
 
     private List<BikeStationDO> getBikeStationList(List<String[]> list){
